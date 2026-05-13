@@ -4,13 +4,17 @@ import pygame
 pygame.init()
 
 #init screen!!!!!!!
-SCREEN_WIDTH, SCREEN_HEIGHT = 1400, 600
+SCREEN_WIDTH, SCREEN_HEIGHT = 1400, 800
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
 #init positions
 x_pos = 400
 y_pos = 300
+
+ROAD_TOP = 250
+ROAD_BOTTOM = 350
+
 
 
 run = True
@@ -30,8 +34,12 @@ while run:
     if keys[pygame.K_w]:
         y_pos -= 3
 
+
+
     x_pos = max(0, min(x_pos, SCREEN_WIDTH - 40))  
-    y_pos = max(0, min(y_pos, SCREEN_HEIGHT - 40))
+    y_pos = max(ROAD_TOP, min(y_pos, ROAD_BOTTOM - 20))
+
+
 
     #drawing
     screen.fill((0, 0, 0))
