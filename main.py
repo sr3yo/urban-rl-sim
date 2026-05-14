@@ -12,10 +12,13 @@ clock = pygame.time.Clock()
 x_pos = 400
 y_pos = 300
 
-ROAD_TOP = 250
-ROAD_BOTTOM = 350
 
+#for figure 8 road
 points = []
+
+#angle and speed variables
+angle = 0
+speed = 0
 
 for t in range(0, 1000):
     x = SCREEN_WIDTH//2 + int(400 * math.sin(t * 0.01))
@@ -33,19 +36,24 @@ while run:
     #keyboard input
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        x_pos -= 3
+        angle -= 3
+
     if keys[pygame.K_d]:
-        x_pos += 3
-    if keys[pygame.K_s]:
-        y_pos += 3
+        angle += 3
+
     if keys[pygame.K_w]:
-        y_pos -= 3
+        speed = 3
 
+    elif keys[pygame.K_s]:
+        speed = -3
 
-
-    x_pos = max(0, min(x_pos, SCREEN_WIDTH - 40))  
-    y_pos = max(ROAD_TOP, min(y_pos, ROAD_BOTTOM - 20))
-
+    
+    else:
+        speed = 0
+    
+    x_pos += speed * math.cos(math.radians(angle))
+    y_pos -= speed * math.sin(math.radians(angle))
+   
 
 
     #drawing
