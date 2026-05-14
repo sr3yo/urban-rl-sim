@@ -1,10 +1,10 @@
 import pygame
-
+import math 
 
 pygame.init()
 
 #init screen!!!!!!!
-SCREEN_WIDTH, SCREEN_HEIGHT = 1400, 800
+SCREEN_WIDTH, SCREEN_HEIGHT = 1000, 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
@@ -14,6 +14,13 @@ y_pos = 300
 
 ROAD_TOP = 250
 ROAD_BOTTOM = 350
+
+points = []
+
+for t in range(0, 1000):
+    x = SCREEN_WIDTH//2 + int(400 * math.sin(t * 0.01))
+    y = SCREEN_HEIGHT//2 + int(200 * math.sin(t * 0.02))
+    points.append((x, y))
 
 
 
@@ -42,9 +49,10 @@ while run:
 
 
     #drawing
-    screen.fill((0, 0, 0))
-    pygame.draw.rect(screen, (80, 80, 80), (0, 250, SCREEN_WIDTH, 100))
-    pygame.draw.rect(screen, (255, 255, 0), (x_pos, y_pos, 20, 20))
+    screen.fill((124, 252, 0))
+    for p in points:
+        pygame.draw.circle(screen, (80 , 80, 80), p, 30)
+    pygame.draw.rect(screen, (3, 36, 252), (x_pos, y_pos, 20, 20))
     pygame.display.flip()
     clock.tick(60)
 
