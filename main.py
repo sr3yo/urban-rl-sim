@@ -50,6 +50,8 @@ def cast_ray(x, y, angle, points):
             
         if not on_road:
             return distance
+        
+    return 200
 
 
 run = True
@@ -75,6 +77,7 @@ while run:
     else:
         speed = 0
     
+    #calculate current x pos and y pos
     x_pos += speed * math.cos(math.radians(angle))
     y_pos -= speed * math.sin(math.radians(angle))
 
@@ -93,8 +96,24 @@ while run:
     screen.fill((124, 252, 0))
     for p in points:
         pygame.draw.circle(screen, (80 , 80, 80), p, 30)
+    
+
+    #for each respective ray angle, draw the ray-line
+    for ray_angle in ray_angles:
+
+        d = cast_ray(x_pos, y_pos, ray_angle, points)
+
+        #calculate the end pos for the end of the line respectively
+        end_x = x_pos + d * math.cos(math.radians(ray_angle))
+        end_y = y_pos - d * math.sin(math.radians(ray_angle))
+
+        pygame.draw.line(screen, (255,255,255), (x_pos, y_pos), (end_x, end_y))
+
+    #draw the actual car
     pygame.draw.rect(screen, (3, 36, 252), (x_pos, y_pos, 20, 20))
     pygame.display.flip()
+
+    #every 60 frames
     clock.tick(60)
 
 
