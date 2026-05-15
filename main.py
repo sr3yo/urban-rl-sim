@@ -20,11 +20,36 @@ points = []
 angle = 0
 speed = 0
 
+
+
 for t in range(0, 1000):
     x = SCREEN_WIDTH//2 + int(400 * math.sin(t * 0.01))
     y = SCREEN_HEIGHT//2 + int(200 * math.sin(t * 0.02))
     points.append((x, y))
 
+
+#function to cast array
+def cast_ray(x, y, angle, points):
+
+    for distance in range(0, 200):
+        #tip of ray each time
+        ray_x = x + distance * math.cos(math.radians(angle))
+        ray_y = y + distance * math.sin(math.radians(angle))
+
+        #check off screen bounds
+        if ray_x > SCREEN_WIDTH or ray_y > SCREEN_HEIGHT or ray_x < 0 or ray_y < 0:
+            return distance
+        
+        on_road = False
+        
+        for p in points:
+            #check if distance less than radius
+            if math.sqrt((ray_x - p[0])**2 + (ray_y - p[1]) ** 2) < 30:
+                on_road = True
+                break   
+            
+        if not on_road:
+            return distance
 
 
 run = True
@@ -47,12 +72,20 @@ while run:
     elif keys[pygame.K_s]:
         speed = -3
 
-    
     else:
         speed = 0
     
     x_pos += speed * math.cos(math.radians(angle))
     y_pos -= speed * math.sin(math.radians(angle))
+
+    #RAY ANGLES
+    ray_angles = [
+        angle,
+        angle + 45,
+        angle - 45,
+        angle + 90,
+        angle - 90
+    ]
    
 
 
