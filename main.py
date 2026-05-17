@@ -8,47 +8,37 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 1000, 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
+#need this layer functionality to draw the surface; cannot use get_at() otherwise
+track_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+track_surface.fill((124, 252, 0))
+
+pygame.draw.ellipse(track_surface,(80,80,80), (20,20,960,560), 80)
+
+
 #init positions
 x_pos = 400
 y_pos = 300
-
-
-#for figure 8 road
-points = []
 
 #angle and speed variables
 angle = 0
 speed = 0
 
-
-
-for t in range(0, 1000):
-    x = SCREEN_WIDTH//2 + int(400 * math.sin(t * 0.01))
-    y = SCREEN_HEIGHT//2 + int(200 * math.sin(t * 0.02))
-    points.append((x, y))
-
+ROAD_COLOR = (80,80,80)
 
 #function to cast array
-def cast_ray(x, y, angle, points):
+def cast_ray(x, y, angle):
 
     for distance in range(0, 200):
         #tip of ray each time
         ray_x = x + distance * math.cos(math.radians(angle))
-        ray_y = y + distance * math.sin(math.radians(angle))
+        ray_y = y - distance * math.sin(math.radians(angle))
 
         #check off screen bounds
-        if ray_x > SCREEN_WIDTH or ray_y > SCREEN_HEIGHT or ray_x < 0 or ray_y < 0:
+        if ray_x >= SCREEN_WIDTH or ray_y >= SCREEN_HEIGHT or ray_x < 0 or ray_y < 0:
             return distance
         
-        on_road = False
-        
-        for p in points:
-            #check if distance less than radius
-            if math.sqrt((ray_x - p[0])**2 + (ray_y - p[1]) ** 2) < 30:
-                on_road = True
-                break   
-            
-        if not on_road:
+        color = track_surface.get_at((int(ray_x), int(ray_y)))
+        if color[:3] != ROAD_COLOR:
             return distance
         
     return 200
@@ -93,21 +83,20 @@ while run:
 
 
     #drawing
-    screen.fill((124, 252, 0))
-    for p in points:
-        pygame.draw.circle(screen, (80 , 80, 80), p, 30)
+    screen.blit(track_surface, (0,0))
+
     
 
     #for each respective ray angle, draw the ray-line
     for ray_angle in ray_angles:
 
-        d = cast_ray(x_pos, y_pos, ray_angle, points)
+        d = cast_ray(x_pos, y_pos, ray_angle)
 
         #calculate the end pos for the end of the line respectively
         end_x = x_pos + d * math.cos(math.radians(ray_angle))
         end_y = y_pos - d * math.sin(math.radians(ray_angle))
 
-        pygame.draw.line(screen, (255,255,255), (x_pos, y_pos), (end_x, end_y))
+        pygame.draw.line(screen, (255,255,255), (int(x_pos), int(y_pos)), (int(end_x), int(end_y)))
 
     #draw the actual car
     pygame.draw.rect(screen, (3, 36, 252), (x_pos, y_pos, 20, 20))
