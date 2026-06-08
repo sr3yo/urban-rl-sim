@@ -99,23 +99,29 @@ class CarEnvironment(gym.Env):
         self.x += self.speed * math.cos(math.radians(self.angle))
         self.y  -= self.speed * math.sin(math.radians(self.angle))
 
-        
-        #current color of where the car is
-        current_color = self.track_surface.get_at((int(self.x), int(self.y)))
 
         #keep track of reward
         reward = 0
         done = False
 
-        #if on the road, positive award
-        if current_color[:3] == self.ROAD_COLOR:
-            reward = 1.0 if self.speed > 0 else -0.5
-            done = False
-
-        #if on grass, negative award
-        else:
+        #off screen reward system
+        if self.x >= self.SCREEN_WIDTH or self.x < 0 or self.y >= self.SCREEN_HEIGHT or self.y < 0:
             reward = -100
             done = True
+        else:
+            #current color of where the car is
+            current_color = self.track_surface.get_at((int(self.x), int(self.y)))
+
+
+            #if on the road, positive award
+            if current_color[:3] == self.ROAD_COLOR:
+                reward = 1.0 if self.speed > 0 else -0.5
+                done = False
+
+            #if on grass, negative award
+            else:
+                reward = -100
+                done = True
 
         ray_angles = [self.angle, self.angle+45, self.angle-45, self.angle+90, self.angle-90]
         distances = []
