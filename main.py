@@ -16,11 +16,11 @@ pygame.draw.ellipse(track_surface,(80,80,80), (20,20,960,560), 80)
 
 
 #init positions
-x_pos = 400
-y_pos = 300
+x_pos = 500
+y_pos = 60
 
 #angle and speed variables
-angle = 0
+angle = 180
 speed = 0
 
 ROAD_COLOR = (80,80,80)
@@ -53,10 +53,10 @@ while run:
     #keyboard input
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        angle -= 3
+        angle += 3
 
     if keys[pygame.K_d]:
-        angle += 3
+        angle -= 3
 
     if keys[pygame.K_w]:
         speed = 3
@@ -99,7 +99,7 @@ while run:
         pygame.draw.line(screen, (255,255,255), (int(x_pos), int(y_pos)), (int(end_x), int(end_y)))
 
     #draw the actual car
-    pygame.draw.rect(screen, (3, 36, 252), (x_pos, y_pos, 20, 20))
+    pygame.draw.rect(screen, (3, 36, 252), (int(x_pos) - 10, int(int(y_pos)) - 10, 20, 20))
     pygame.display.flip()
 
     #every 60 frames
