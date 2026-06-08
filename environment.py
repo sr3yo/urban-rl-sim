@@ -31,7 +31,6 @@ class CarEnvironment(gym.Env):
             low = 0, high = 200, shape = (5,), dtype=np.float32
         )
 
-
         #initialize pygame attributes
         pygame.init()
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
@@ -62,7 +61,6 @@ class CarEnvironment(gym.Env):
     #reset function
     def reset(self, seed = None, options = None):
 
-
         #clear and allow gymnasium to handle reprod seeding
         super().reset(seed=seed)
         #reset all class variables to initial state
@@ -70,7 +68,6 @@ class CarEnvironment(gym.Env):
         self.y = self.start_y
         self.angle = self.start_angle
         self.speed = 0
-
 
         #get the initial ray distances as well when the car resets
         ray_angles = [self.angle, self.angle+45, self.angle-45, self.angle+90, self.angle-90]
@@ -83,6 +80,7 @@ class CarEnvironment(gym.Env):
         #return as a numpy array
         return np.array(distances, dtype=np.float32), {}
     
+
     def step(self, action):
         #steering left
         if action == 0:
@@ -100,6 +98,52 @@ class CarEnvironment(gym.Env):
         #update x and y pos
         self.x += self.speed * math.cos(math.radians(self.angle))
         self.y  -= self.speed * math.sin(math.radians(self.angle))
+
+        
+        #current color of where the car is
+        current_color = self.track_surface.get_at((int(self.x), int(self.y)))
+
+        #keep track of reward
+        reward = 0
+        done = False
+
+        #if on the road, positive award
+        if current_color[:3] == self.ROAD_COLOR:
+            reward = 1.0 if self.speed > 0 else -0.5
+            done = False
+
+        #if on grass, negative award
+        else:
+            reward = -100
+            done = True
+
+        ray_angles = [self.angle, self.angle+45, self.angle-45, self.angle+90, self.angle-90]
+        distances = []
+
+        #cast arrays everytime; need this to get the state
+        for ray_angle in ray_angles:
+            d = self.cast_ray(self.x, self.y, ray_angle)
+            distances.append(d)
+        
+        #convert to numpy array
+        state = np.array(distances, dtype=np.float32)        
+
+        #return the state, the reward and the done flag
+        return state, reward, done, False, {}
+        
+
+        
+
+
+
+        
+
+        
+
+    
+
+    
+
             
 
 
